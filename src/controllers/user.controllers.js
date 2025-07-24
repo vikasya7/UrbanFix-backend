@@ -241,25 +241,24 @@ const changePassword=asyncHandler(async(req,res)=>{
 
 
 const createReport=asyncHandler(async(req,res)=>{
-    //console.log("hi create reprt");
+    console.log("hi create reprt");
     
     const {description,location,title}=req.body
-     //console.log("👉 Data received:", req.body);
+     console.log("👉 Data received:", req.body);
 
     if([description,location,title].some(field=>field?.trim()==="")){
         throw new ApiError(400,"All fields are required");
     }
 
-    const reportImageLocalPath = req.files?.[0]?.path;
+      const reportImageBuffer = req.files?.[0]?.buffer;
     //console.log("path: ",reportImageLocalPath);
-    if(!reportImageLocalPath){
-        throw new ApiError(400,"report Image path not found")
-    }
+    if (!reportImageBuffer) {
+    throw new ApiError(400, "Report image buffer not found");
+     }
    
     
-    const cloudinaryReportImage=await uploadOnCloudinary(reportImageLocalPath);
-    //console.log("url cloudinary",cloudinaryReportImage);
-    
+    const cloudinaryReportImage = await uploadOnCloudinary(reportImageBuffer);
+    console.log("✅ Uploaded to Cloudinary:", cloudinaryReportImage);
     if(!cloudinaryReportImage){
         throw new ApiError(400,"error while uploading error image")
     }

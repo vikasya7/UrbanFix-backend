@@ -1,33 +1,40 @@
-import {v2 as cloudinary} from 'cloudinary'
-import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+import streamifier from 'streamifier';
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-    cloudinary.config({
-        cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
-        api_key:process.env.CLOUDINARY_API_KEY,
-        api_secret:process.env.CLOUDINARY_API_SECRET
-    })
+// ✅ Updated to accept Buffer instead of file path
+const uploadOnCloudinary = async (fileBuffer) => {
+  if (!fileBuffer) return null;
 
-    const uploadOnCloudinary= async (localFilePath)=>{
-        if(!localFilePath){
-            return null;
+  try {
+    return await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "urbanfix-reports"
+        },
+        (error, result) => {
+          if (error) {
+            console.error("❌ Cloudinary Upload Error:", error.message);
+            reject(error);
+          } else {
+            console.log("✅ Uploaded to Cloudinary:", result.url);
+            resolve(result);
+          }
         }
-       try{
-          const result= await cloudinary.uploader.upload(localFilePath,{
-            resource_type:"auto"
-          })
-          console.log("uploaded successfully",result.url);
-          fs.unlinkSync(localFilePath);
-          return result
-       } catch(error){
-         console.log("error in uploading to cloudinary",error.message);
-         return null;
-         
-       }
-    }
-    
-        
-    
+      );
 
+      streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+    });
+  } catch (error) {
+    console.error("❌ Upload failed:", error.message);
+    return null;
+  }
+};
 
-export {uploadOnCloudinary}
+export { uploadOnCloudinary };
