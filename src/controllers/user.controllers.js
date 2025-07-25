@@ -250,7 +250,10 @@ const createReport=asyncHandler(async(req,res)=>{
         throw new ApiError(400,"All fields are required");
     }
 
-      const reportImageBuffer = req.files?.[0]?.buffer;
+      if (!req.files || req.files.length === 0) {
+  throw new ApiError(400, "No report image provided");
+}
+const reportImageBuffer = req.files[0].buffer;
     //console.log("path: ",reportImageLocalPath);
     if (!reportImageBuffer) {
     throw new ApiError(400, "Report image buffer not found");

@@ -5,10 +5,10 @@ import jwt from "jsonwebtoken";
 
 
 const verifyJWT= asyncHandler(async (req,res,next)=>{
-   //console.log("✅ verifyJWT middleware running...");
+   console.log("✅ verifyJWT middleware running...");
   const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "").trim();
 
-   //console.log(token);
+   console.log(token);
    
    
    if(!token){
