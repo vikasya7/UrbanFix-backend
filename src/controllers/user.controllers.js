@@ -13,17 +13,21 @@ import { mailSend } from "../utils/mailSend.js";
 const generateAccessAndRefreshToken= async (userId)=>{
 
     try {
-        //console.log("Generating tokens for:", userId);
+        console.log("Generating tokens for:", userId);
         const user=await User.findById(userId)
-        //console.log("founded");
+        console.log("founded");
         
         const accessToken=user.generateAccessToken();
         const refreshToken= user.generateRefreshToken();
-       // console.log("token founded");
+        console.log("token founded");
         
         user.refreshToken = refreshToken;
         await user.save({validateBeforeSave:false})
-        //console.log("generated access tken and refresh token");
+        console.log("generated access tken and refresh token");
+        console.log(accessToken);
+        console.log(refreshToken);
+        
+        
         return {accessToken, refreshToken}
        
         
