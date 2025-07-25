@@ -8,13 +8,13 @@ const verifyJWT= asyncHandler(async (req,res,next)=>{
    console.log("✅ verifyJWT middleware running...");
   const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "").trim();
 
-   console.log(token);
+  
    
    
    if(!token){
     return res.status(401).json({
       success: false,
-      message: "Unauthorized. No token provided.",
+      message: "Unauthorized. No token provided.", 
     });
    }
    try {

@@ -163,10 +163,11 @@ const loginUser= asyncHandler(async (req,res)=>{
 
 
 
-    const options={
-        httpOnly:true,
-        secure:false
-    }
+    const options = {
+   httpOnly: true,
+   secure: true, // ✅ Must be true when frontend is on HTTPS
+   sameSite: "None", // ✅ Required for cross-origin cookies (Vercel <-> Render)
+ };
 
     return res
     .cookie("accessToken",accessToken,{
